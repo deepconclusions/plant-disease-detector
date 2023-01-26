@@ -2,7 +2,6 @@ from django.shortcuts import render
 import pathlib
 import numpy as np
 from PIL import Image
-import cv2
 import tensorflow_hub as hub
 
 # django rest framework
