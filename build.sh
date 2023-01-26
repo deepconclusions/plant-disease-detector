@@ -2,10 +2,13 @@
 # exit on error
 set -o errexit
 
+pip install --upgrade pip
+pip install tensorflow
+pip install tensorflow_hub
+
 poetry install
 
 python manage.py collectstatic --no-input
 python manage.py migrate
 
-pip install --upgrade pip
 pip install --force-reinstall -U setuptools
