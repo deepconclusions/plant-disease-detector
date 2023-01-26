@@ -3,8 +3,11 @@
 set -o errexit
 
 pip install --upgrade pip
+
 pip install tensorflow
 pip install tensorflow_hub
+
+pip install --upgrade Pillow
 
 poetry install
 
