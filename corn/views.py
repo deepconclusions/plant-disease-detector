@@ -18,7 +18,7 @@ def getPredictions(request):
     import tensorflow as tf
     BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
-    model = tf.keras.models.load_model(BASE_DIR / 'corn/corn_model.h5',
+    model = tf.keras.models.load_model(BASE_DIR / 'corn/models/corn_model.h5',
                                        custom_objects={'KerasLayer': hub.KerasLayer})
 
     # receive
