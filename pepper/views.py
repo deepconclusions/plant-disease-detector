@@ -40,7 +40,7 @@ def singlePrediction(request):
             confidence = np.max(predictions)
             data = classes[prediction]
             data["confidence"], data["value_error"] = confidence, "No errors caught"
-            serializer = pepperSerializer(data)
+            serializer = PepperSerializer(data)
             return Response(serializer.data)
         else:
             data = {"prediction": 999,
@@ -56,7 +56,7 @@ def singlePrediction(request):
                 "confidence": 0.0,
                 "description": "No description",
                 "value_error": "You are probably not making a POST request, contact concerned personnel for advice"}
-        serializer = pepperSerializer(data)
+        serializer = PepperSerializer(data)
         return Response(serializer.data)
 
 
