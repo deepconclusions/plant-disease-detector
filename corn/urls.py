@@ -2,5 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('prediction/', views.getPredictions, name='corn_prediction'),
+    path('single-prediction/', views.singlePrediction, name='single_prediction'),
+    path('multiple-prediction/', views.multiplePrediction,
+         name='multiple_prediction'),
 ]
