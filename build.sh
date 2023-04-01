@@ -8,10 +8,10 @@ pip install tensorflow
 
 pip install --upgrade Pillow
 
-curl -sSL https://install.python-poetry.org | python - --uninstall
-
-curl -sSL https://install.python-poetry.org | python -
-
+echo "Installing the latest version of poetry..."
+pip install poetry==1.2.0
+rm poetry.lock
+poetry lock
 poetry install
 
 python manage.py collectstatic --no-input
