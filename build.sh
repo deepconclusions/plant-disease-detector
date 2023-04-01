@@ -8,7 +8,9 @@ pip install tensorflow
 
 pip install --upgrade Pillow
 
-poetry self update
+curl -sSL https://install.python-poetry.org | python - --uninstall
+
+curl -sSL https://install.python-poetry.org | python -
 
 poetry install
 
