@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["jumashafara <jumashafara0@gmail.com>"]
 readme = "README.md"
-packages = [{include = "plants_pro_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
