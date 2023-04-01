@@ -13,10 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 # import dj_database_url
-import tensorflow as tf
-
-# load_tensorflow
-tf.compat.v1.disable_eager_execution()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

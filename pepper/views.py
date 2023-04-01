@@ -1,13 +1,11 @@
-from plants.props import colored
 import pathlib
-import numpy as np
-from PIL import Image
-import tensorflow as tf
-import tensorflow_hub as hub
 
-# django rest framework
+from plants.props import colored
+from plants.props import Model
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 from .serializers import PepperSerializer
 
 # Create your views here.
@@ -19,54 +17,39 @@ classes = {
         To manage bacterial spot in pepper plants, it is important to use disease-free seed and transplants, rotate crops to prevent the buildup of the bacteria in the soil, and avoid overhead watering, as wet leaves can facilitate the spread of the disease. Copper-based fungicides can also be applied to protect plants from infection. However, it is important to note that once a plant is infected with bacterial spot, there is no cure, and infected plants should be removed and destroyed to prevent the spread of the disease to other plants.
         """
         },
-    1: {"prediction": 1, "label": "Healthy", "description": "No disease detected in this"},
+    1: {"prediction": 1, "label": "Healthy", "description": 
+        """
+        Pepper plants are considered healthy when they are free of diseases, pests, and nutrient deficiencies, and are producing high-quality fruit. Some key factors that contribute to healthy pepper plants include 
+        proper watering, good nutrition, pest and disease control, and adequate sunlight and temperature to thrive. Regular monitoring and control measures, such as removing and destroying infected plant debris, can help to prevent damage to the plants. By providing these optimal conditions, pepper plants can grow and produce high-quality fruit.
+        """
+        },
    }
+
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
 @api_view(['GET', 'POST'])
 def singlePrediction(request):
-    # load model
     try:
-        BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
-        model = tf.keras.models.load_model(BASE_DIR / 'pepper/models/pepper_modelv2.h5',
-                                        custom_objects={'KerasLayer': hub.KerasLayer})
-        print(colored(0, 255, 0, "Pepper model loaded successfully"))
+        model = Model()
+        model.load(BASE_DIR / 'pepper/models/pepper_modelv4.h5')
     except Exception as e:
-        print(colored(255, 0, 0, "Error loading model or importing tensorflow"))
-        print(colored(255, 0, 0, str(e)))
-    # receive input image
+        print(colored(255, 0, 0, f"Error loading saved model {str(e)}"))
+
     if request.method == 'POST':
-        # open image file using PIL
-        if 'pepper-image' in request.FILES:
+        try: 
             image_file = request.FILES['pepper-image']
-            image = Image.open(image_file)
-            # convert image to numpy array
-            image_array = np.array(image.resize((224, 224)))
-            image_array = image_array / 255
-            # predict
-            predictions = model.predict(np.array([image_array]))
-            prediction = np.argmax(predictions)
-            confidence = np.max(predictions)
-            data = classes[prediction]
+            image_array = model.process_image(image_file)
+            predictions = model.predict(image_array)
+            prediction = model.predicted_class(predictions)
+            confidence = model.confidence(predictions)
+            data = classes[int(prediction)]
             data["confidence"], data["value_error"] = confidence, "No errors caught"
             serializer = PepperSerializer(data)
             return Response(serializer.data)
-        else:
-            data = {"prediction": 999,
-                    "label": "No predicton",
-                    "confidence": 0.0,
-                    "description": "No description",
-                    "value_error": "Either No pepper image is provided or It is not labelled, make sure to label with 'pepper-image'"}
-            serializer = PepperSerializer(data)
-            return Response(serializer.data)
-    elif request.method == 'GET':
-        data = {"prediction": 999,
-                "label": "No label",
-                "confidence": 0.0,
-                "description": "No description",
-                "value_error": "You are probably not making a POST request, contact concerned personnel for advice"}
-        serializer = PepperSerializer(data)
-        return Response(serializer.data)
-
+        except:
+            return Response("Failed to make prediction")
+    else:
+        return Response("Only post requests are allowed to this endpoint")
 
 def multiplePrediction(request):
     pass
