@@ -26,15 +26,14 @@ classes = {
    }
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
+try:
+    model = Model()
+    model.load(BASE_DIR / 'pepper/models/pepper_modelv2.h5')
+except Exception as e:
+    print(colored(255, 0, 0, f"Error loading saved model \n {str(e)}"))
 
 @api_view(['GET', 'POST'])
 def singlePrediction(request):
-    try:
-        model = Model()
-        model.load(BASE_DIR / 'pepper/models/pepper_modelv4.h5')
-    except Exception as e:
-        print(colored(255, 0, 0, f"Error loading saved model {str(e)}"))
-
     if request.method == 'POST':
         try: 
             image_file = request.FILES['pepper-image']
@@ -49,7 +48,7 @@ def singlePrediction(request):
         except:
             return Response("Failed to make prediction")
     else:
-        return Response("Only post requests are allowed to this endpoint")
+        return Response("Only POST requests are allowed to this endpoint")
 
 def multiplePrediction(request):
     pass
